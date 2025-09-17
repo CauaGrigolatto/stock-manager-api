@@ -1,5 +1,6 @@
 package br.com.codebeans.stockapi.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,26 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/categories")
 @Slf4j
-public class CategoryController {
+public class CategoriesController {
 
     @Autowired
     private ItemCategoryMapper itemCategoryMapper;
 
     @Autowired
     private CategoryService categoryService;
+
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        try {
+            List<ItemCategory> categories = categoryService.findAll();
+            List<ItemCategoryDTO> categoriesDTO = itemCategoryMapper.toListDTO(categories);
+            return ResponseEntity.ok(categoriesDTO);
+        }
+        catch(Throwable t) {
+            log.error("Error on getting all categories", t);
+            return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+    }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid SaveCategoryRequest saveCategoryRequest, BindingResult result) {

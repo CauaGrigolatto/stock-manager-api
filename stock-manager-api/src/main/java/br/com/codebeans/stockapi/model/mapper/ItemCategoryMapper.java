@@ -1,5 +1,7 @@
 package br.com.codebeans.stockapi.model.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,4 +16,6 @@ public interface ItemCategoryMapper {
     ItemCategory toItemCategory(SaveCategoryRequest request);
 
     ItemCategoryDTO toDTO(ItemCategory itemCategory);
+
+    List<ItemCategoryDTO> toListDTO(List<ItemCategory> categories);
 }

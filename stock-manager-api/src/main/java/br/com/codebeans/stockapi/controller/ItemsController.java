@@ -1,5 +1,6 @@
 package br.com.codebeans.stockapi.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,19 @@ public class ItemsController {
 
     @Autowired
     private StockItemService stockItemService;
+
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        try {
+            List<StockItem> items = stockItemService.findAll();
+            List<StockItemDTO> itemsDTO = stockItemMapper.toListDTO(items);
+            return ResponseEntity.ok(itemsDTO);
+        }
+        catch(Throwable t) {
+            log.error("Error on getting all items", t);
+            return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+    }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid SaveItemRequest saveItemRequest, BindingResult result) {

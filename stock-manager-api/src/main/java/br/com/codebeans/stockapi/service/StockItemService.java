@@ -1,5 +1,6 @@
 package br.com.codebeans.stockapi.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,16 @@ public class StockItemService {
         }
         catch(Throwable t) {
             log.error("Error on finding item by id");
+            throw t;
+        }
+    }
+
+    public List<StockItem> findAll() {
+        try {
+            return itemRepository.findAll();
+        }
+        catch(Throwable t) {
+            log.error("Error on finding all items");
             throw t;
         }
     }
