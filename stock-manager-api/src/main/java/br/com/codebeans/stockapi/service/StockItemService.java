@@ -1,5 +1,7 @@
 package br.com.codebeans.stockapi.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,17 @@ public class StockItemService {
             itemRepository.save(item);
         }
         catch(Throwable t) {
-            log.error("Error on saving item", t);
+            log.error("Error on saving item");
+            throw t;
+        }
+    }
+
+    public Optional<StockItem> findById(Integer id) {
+        try {
+            return itemRepository.findById(id);
+        }
+        catch(Throwable t) {
+            log.error("Error on finding item by id");
             throw t;
         }
     }
