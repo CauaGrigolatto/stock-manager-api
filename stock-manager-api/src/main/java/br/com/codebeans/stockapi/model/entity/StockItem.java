@@ -1,6 +1,9 @@
 package br.com.codebeans.stockapi.model.entity;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -42,4 +45,9 @@ public class StockItem {
     @Column(name="description", length=255)
     @Basic(optional=false)
     private String description;
+
+    @Column(name="created_at")
+    @Basic(optional=false)
+    @CreationTimestamp
+    private Timestamp createdAt;
 }

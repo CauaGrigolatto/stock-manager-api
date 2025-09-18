@@ -45,4 +45,24 @@ public class StockItemService {
             throw t;
         }
     }
+
+    public long countAll() {
+        try {
+            return itemRepository.count();
+        }
+        catch(Throwable t) {
+            log.error("Error on counting all items");
+            throw t;
+        }
+    }
+
+    public long countByCategories() {
+        try {
+            return itemRepository.countByCategories();
+        }
+        catch(Throwable t) {
+            log.error("Error on counting by categories");
+            throw t;
+        }
+    }
 }

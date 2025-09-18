@@ -110,4 +110,28 @@ public class ItemsController {
             return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> countAll() {
+        try {
+            long countResult = stockItemService.countAll();
+            return ResponseEntity.ok(countResult);
+        }
+        catch(Throwable t) {
+            log.error("Error on counting all items", t);
+            return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+    }
+
+    @GetMapping("/count-by-categories")
+    public ResponseEntity<?> countByCategories() {
+        try {
+            long countResult = stockItemService.countByCategories();
+            return ResponseEntity.ok(countResult);
+        }
+        catch(Throwable t) {
+            log.error("Error on counting by categories", t);
+            return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+    }
 }

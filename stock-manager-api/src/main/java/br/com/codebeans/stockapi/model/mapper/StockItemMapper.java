@@ -12,6 +12,7 @@ import br.com.codebeans.stockapi.model.entity.StockItem;
 @Mapper(componentModel="spring")
 public interface StockItemMapper {
     @Mapping(target="id", ignore=true)
+    @Mapping(target="createdAt", ignore=true)
     @Mapping(source="categoryId", target="category.id")
     StockItem toStockItem(SaveItemRequest SaveItemRequest);
 
