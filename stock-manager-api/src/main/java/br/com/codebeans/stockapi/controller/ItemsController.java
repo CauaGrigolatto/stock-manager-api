@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.codebeans.stockapi.model.dto.SaveItemRequest;
+import br.com.codebeans.stockapi.model.dto.CreationDateFiltersDTO;
+import br.com.codebeans.stockapi.model.dto.QuantityFiltersDTO;
+import br.com.codebeans.stockapi.model.dto.SaveItemDTO;
 import br.com.codebeans.stockapi.model.dto.StockItemDTO;
 import br.com.codebeans.stockapi.model.entity.StockItem;
 import br.com.codebeans.stockapi.model.mapper.StockItemMapper;
@@ -38,7 +40,7 @@ public class ItemsController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         try {
-            List<StockItem> items = stockItemService.findAll();
+            List<StockItem> items = stockItemService.findByFilters();
             List<StockItemDTO> itemsDTO = stockItemMapper.toListDTO(items);
             return ResponseEntity.ok(itemsDTO);
         }
@@ -49,7 +51,7 @@ public class ItemsController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody @Valid SaveItemRequest saveItemRequest, BindingResult result) {
+    public ResponseEntity<?> save(@RequestBody @Valid SaveItemDTO saveItemRequest, BindingResult result) {
         try {
             if (result.hasErrors()) {
                 return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));
@@ -68,7 +70,7 @@ public class ItemsController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
         @PathVariable Integer id, 
-        @RequestBody @Valid SaveItemRequest saveItemRequest, 
+        @RequestBody @Valid SaveItemDTO saveItemRequest, 
         BindingResult result) {
         
         try {
@@ -131,6 +133,30 @@ public class ItemsController {
         }
         catch(Throwable t) {
             log.error("Error on counting by categories", t);
+            return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+    }
+
+    @GetMapping("/count-by-creation-date")
+    public ResponseEntity<?> countByCreationDate(CreationDateFiltersDTO filters) {
+        try {
+            long countResult = stockItemService.countByCreationDate(filters);
+            return ResponseEntity.ok(countResult);
+        }
+        catch (Throwable t) {
+            log.error("Error on counting created items between dates", t);
+            return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+    }
+
+    @GetMapping("/count-by-quantity")
+    public ResponseEntity<?> countByQuantity(QuantityFiltersDTO filters) {
+        try {
+            long countResult = stockItemService.countByQuantity(filters);
+            return ResponseEntity.ok(countResult);
+        }
+        catch (Throwable t) {
+            log.error("Error on counting by quantity", t);
             return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
     }

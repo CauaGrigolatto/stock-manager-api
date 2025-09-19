@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.codebeans.stockapi.model.dto.ItemCategoryDTO;
-import br.com.codebeans.stockapi.model.dto.SaveCategoryRequest;
+import br.com.codebeans.stockapi.model.dto.SaveCategoryDTO;
 import br.com.codebeans.stockapi.model.entity.ItemCategory;
 import br.com.codebeans.stockapi.model.mapper.ItemCategoryMapper;
 import br.com.codebeans.stockapi.service.CategoryService;
@@ -49,7 +49,7 @@ public class CategoriesController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody @Valid SaveCategoryRequest saveCategoryRequest, BindingResult result) {
+    public ResponseEntity<?> save(@RequestBody @Valid SaveCategoryDTO saveCategoryRequest, BindingResult result) {
         try {
             if (result.hasErrors()) {
                 return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));
@@ -68,7 +68,7 @@ public class CategoriesController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
         @PathVariable Integer id,
-        @RequestBody @Valid SaveCategoryRequest saveCategoryRequest,
+        @RequestBody @Valid SaveCategoryDTO saveCategoryRequest,
         BindingResult result
     ) {
         try {

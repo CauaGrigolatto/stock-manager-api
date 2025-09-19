@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record SaveItemRequest(
+public record SaveItemDTO(
     @NotBlank
     @Length(max=255)
     String name,

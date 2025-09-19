@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record SaveCategoryRequest(
+public record SaveCategoryDTO(
     @NotBlank
     @Length(max=100)
     String name

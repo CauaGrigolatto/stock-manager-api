@@ -5,7 +5,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import br.com.codebeans.stockapi.model.dto.SaveItemRequest;
+import br.com.codebeans.stockapi.model.dto.SaveItemDTO;
 import br.com.codebeans.stockapi.model.dto.StockItemDTO;
 import br.com.codebeans.stockapi.model.entity.StockItem;
 
@@ -14,7 +14,7 @@ public interface StockItemMapper {
     @Mapping(target="id", ignore=true)
     @Mapping(target="createdAt", ignore=true)
     @Mapping(source="categoryId", target="category.id")
-    StockItem toStockItem(SaveItemRequest SaveItemRequest);
+    StockItem toStockItem(SaveItemDTO SaveItemRequest);
 
     StockItemDTO toDTO(StockItem stockItem);
 
