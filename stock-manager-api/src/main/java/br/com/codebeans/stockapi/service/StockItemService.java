@@ -1,14 +1,18 @@
 package br.com.codebeans.stockapi.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import br.com.codebeans.stockapi.model.dto.CreationDateFiltersDTO;
+import br.com.codebeans.stockapi.model.dto.ItemsFilterDTO;
+import br.com.codebeans.stockapi.model.dto.PaginationFilterDTO;
 import br.com.codebeans.stockapi.model.dto.QuantityFiltersDTO;
+import br.com.codebeans.stockapi.model.entity.ItemCategory;
 import br.com.codebeans.stockapi.model.entity.StockItem;
 import br.com.codebeans.stockapi.model.specifications.StockItemSpecifications;
 import br.com.codebeans.stockapi.repository.StockItemRepository;
@@ -41,15 +45,47 @@ public class StockItemService {
         }
     }
 
-    public List<StockItem> findByFilters() throws Throwable {
+    public Page<StockItem> paginate(ItemsFilterDTO filters) throws Throwable {
         try {
-            return itemRepository.findAll();
+            Pageable pageable = PaginationFilterDTO.buildPageable(filters);
+            Specification<StockItem> spec = Specification.where(null);
+
+            if (filters.hasValidName()) {
+                spec = spec.and(StockItemSpecifications.nameLike(filters.getName()));
+            }
+
+            if (filters.isCreatedToday()) {
+                spec = spec.and(StockItemSpecifications.createdToday());
+            }
+            else {
+                if (filters.hasValidMaxQuantity()) {
+                    spec = spec.and(StockItemSpecifications.maxQuantity(filters.getMaxQuantity()));
+                }
+    
+                if (filters.hasValidMinQuantity()) {
+                    spec = spec.and(StockItemSpecifications.minQuantity(filters.getMinQuantity()));
+                }
+            }
+
+            if (filters.hasValidCategoryId()) {
+                ItemCategory category = new ItemCategory();
+                category.setId(filters.getCategoryId());
+                spec = spec.and(StockItemSpecifications.categoryEquals(category));
+            }
+
+            if (filters.hasValidDescription()) {
+                spec = spec.and(StockItemSpecifications.descriptionLike(filters.getDescription()));
+            }
+
+            return itemRepository.findAll(spec, pageable);
         }
         catch(Throwable t) {
             log.error("Error on finding all items");
             throw t;
         }
     }
+
+    
 
     public long countAll() throws Throwable {
         try {

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.codebeans.stockapi.model.dto.CreationDateFiltersDTO;
+import br.com.codebeans.stockapi.model.dto.ItemsFilterDTO;
+import br.com.codebeans.stockapi.model.dto.PaginationResponseDTO;
 import br.com.codebeans.stockapi.model.dto.QuantityFiltersDTO;
-import br.com.codebeans.stockapi.model.dto.ResponseDTO;
 import br.com.codebeans.stockapi.model.dto.SaveItemDTO;
 import br.com.codebeans.stockapi.model.dto.StockItemDTO;
 import br.com.codebeans.stockapi.model.entity.StockItem;
@@ -38,18 +41,23 @@ public class ItemsController {
     @Autowired
     private StockItemService stockItemService;
 
-    //TODO implementar paginação
     @GetMapping
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(ItemsFilterDTO filters) {
         try {
-            List<StockItem> items = stockItemService.findByFilters();
+            Page<StockItem> pages = stockItemService.paginate(filters);
+            Pageable pageable = pages.getPageable();
+
+            List<StockItem> items = pages.getContent();
             List<StockItemDTO> itemsDTO = stockItemMapper.toListDTO(items);
 
-            ResponseDTO<List<StockItemDTO>> response = new ResponseDTO<List<StockItemDTO>>(
-                HttpStatus.OK.value(), 
-                null, 
-                itemsDTO
-            );
+            PaginationResponseDTO<List<StockItemDTO>> response = new PaginationResponseDTO<List<StockItemDTO>>();
+            response.setStatus(HttpStatus.OK.value());
+            response.setData(itemsDTO);
+            response.setMessage(null);
+            response.setPage(pageable.getPageNumber());
+            response.setPageSize(pageable.getPageSize());
+            response.setTotalElements(pages.getTotalElements());
+            response.setTotalPages(pages.getTotalPages());
 
             return ResponseEntity.ok(response);
         }
