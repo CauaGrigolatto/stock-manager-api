@@ -16,6 +16,7 @@ import br.com.codebeans.stockapi.model.entity.ItemCategory;
 import br.com.codebeans.stockapi.model.entity.StockItem;
 import br.com.codebeans.stockapi.model.specifications.StockItemSpecifications;
 import br.com.codebeans.stockapi.repository.StockItemRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -25,8 +26,18 @@ public class StockItemService {
     @Autowired
     private StockItemRepository itemRepository;
 
+    @Autowired
+    private CategoryService categoryService;
+
     public void save(StockItem item) throws Throwable {
         try {
+            Integer categoryId = item.getCategory().getId();
+            Optional<ItemCategory> optCategory = categoryService.findById(categoryId);
+
+            if (optCategory.isEmpty()) {
+                throw new EntityNotFoundException("Could not find category with id " + categoryId + ".");
+            }
+
             itemRepository.save(item);
         }
         catch(Throwable t) {
