@@ -1,7 +1,10 @@
 package br.com.codebeans.stockapi.model.dto;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 public record StockItemDTO(
     Integer id,
@@ -10,7 +13,8 @@ public record StockItemDTO(
     BigDecimal price,
     ItemCategoryDTO category,
     String description,
-    Timestamp createdAt
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", shape=Shape.STRING)
+    LocalDateTime createdAt
 ) {
 
 }

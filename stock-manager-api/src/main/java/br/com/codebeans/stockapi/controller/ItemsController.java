@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.codebeans.stockapi.model.dto.CreationDateFiltersDTO;
 import br.com.codebeans.stockapi.model.dto.QuantityFiltersDTO;
+import br.com.codebeans.stockapi.model.dto.ResponseDTO;
 import br.com.codebeans.stockapi.model.dto.SaveItemDTO;
 import br.com.codebeans.stockapi.model.dto.StockItemDTO;
 import br.com.codebeans.stockapi.model.entity.StockItem;
@@ -37,12 +38,20 @@ public class ItemsController {
     @Autowired
     private StockItemService stockItemService;
 
+    //TODO implementar paginação
     @GetMapping
     public ResponseEntity<?> getAll() {
         try {
             List<StockItem> items = stockItemService.findByFilters();
             List<StockItemDTO> itemsDTO = stockItemMapper.toListDTO(items);
-            return ResponseEntity.ok(itemsDTO);
+
+            ResponseDTO<List<StockItemDTO>> response = new ResponseDTO<List<StockItemDTO>>(
+                HttpStatus.OK.value(), 
+                null, 
+                itemsDTO
+            );
+
+            return ResponseEntity.ok(response);
         }
         catch(Throwable t) {
             log.error("Error on getting all items", t);

@@ -1,7 +1,7 @@
 package br.com.codebeans.stockapi.model.entity;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -49,5 +49,5 @@ public class StockItem {
     @Column(name="created_at")
     @Basic(optional=false)
     @CreationTimestamp
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 }

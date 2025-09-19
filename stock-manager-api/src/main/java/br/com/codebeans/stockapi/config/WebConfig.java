@@ -1,4 +1,4 @@
-package br.com.codebeans.stockapi.controller;
+package br.com.codebeans.stockapi.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
