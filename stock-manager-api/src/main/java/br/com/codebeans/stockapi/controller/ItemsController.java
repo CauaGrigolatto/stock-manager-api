@@ -22,6 +22,7 @@ import br.com.codebeans.stockapi.model.dto.CreationDateFiltersDTO;
 import br.com.codebeans.stockapi.model.dto.ItemsFilterDTO;
 import br.com.codebeans.stockapi.model.dto.PaginationResponseDTO;
 import br.com.codebeans.stockapi.model.dto.QuantityFiltersDTO;
+import br.com.codebeans.stockapi.model.dto.ResponseDTO;
 import br.com.codebeans.stockapi.model.dto.SaveItemDTO;
 import br.com.codebeans.stockapi.model.dto.StockItemDTO;
 import br.com.codebeans.stockapi.model.entity.StockItem;
@@ -76,9 +77,14 @@ public class ItemsController {
 
             StockItem item = stockItemMapper.toStockItem(saveItemRequest);
             stockItemService.save(item);
-            return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.OK.value()));
+            StockItemDTO itemDTO = stockItemMapper.toDTO(item);
 
-        } catch (Throwable t) {
+            ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item saved successfully.");
+
+            return ResponseEntity.ok(response);
+
+        } 
+        catch (Throwable t) {
             log.error("Error on saving item", t);
             return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
@@ -101,10 +107,20 @@ public class ItemsController {
                 return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()));    
             }
             
+            StockItem prevItem = optItem.get();
+
             StockItem item = stockItemMapper.toStockItem(saveItemRequest);
-            item.setId(id);
+            item.setId(prevItem.getId());
+            item.setCreatedAt(prevItem.getCreatedAt());
+            
             stockItemService.save(item);
-            return new ResponseEntity<Void>(HttpStatusCode.valueOf(HttpStatus.OK.value()));
+
+            StockItem updatedItem = stockItemService.findById(id).get();
+            StockItemDTO itemDTO = stockItemMapper.toDTO(updatedItem);
+
+            ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item updated successfully.");
+
+            return ResponseEntity.ok(response);
         }
         catch(Throwable t) {
             log.error("Error on updating item", t);
@@ -122,7 +138,10 @@ public class ItemsController {
             }
 
             StockItemDTO itemDTO = stockItemMapper.toDTO( optItem.get() );
-            return ResponseEntity.ok(itemDTO);
+
+            ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO);
+
+            return ResponseEntity.ok(response);
         }
         catch(Throwable t) {
             log.error("Error on finding item by id", t);
@@ -134,7 +153,8 @@ public class ItemsController {
     public ResponseEntity<?> countAll() {
         try {
             long countResult = stockItemService.countAll();
-            return ResponseEntity.ok(countResult);
+            ResponseDTO<Long> response = ResponseDTO.ok(countResult);
+            return ResponseEntity.ok(response);
         }
         catch(Throwable t) {
             log.error("Error on counting all items", t);
@@ -146,7 +166,8 @@ public class ItemsController {
     public ResponseEntity<?> countByCategories() {
         try {
             long countResult = stockItemService.countByCategories();
-            return ResponseEntity.ok(countResult);
+            ResponseDTO<Long> response = ResponseDTO.ok(countResult);
+            return ResponseEntity.ok(response);
         }
         catch(Throwable t) {
             log.error("Error on counting by categories", t);
@@ -158,7 +179,8 @@ public class ItemsController {
     public ResponseEntity<?> countByCreationDate(CreationDateFiltersDTO filters) {
         try {
             long countResult = stockItemService.countByCreationDate(filters);
-            return ResponseEntity.ok(countResult);
+            ResponseDTO<Long> response = ResponseDTO.ok(countResult);
+            return ResponseEntity.ok(response);
         }
         catch (Throwable t) {
             log.error("Error on counting created items between dates", t);
@@ -170,7 +192,8 @@ public class ItemsController {
     public ResponseEntity<?> countByQuantity(QuantityFiltersDTO filters) {
         try {
             long countResult = stockItemService.countByQuantity(filters);
-            return ResponseEntity.ok(countResult);
+            ResponseDTO<Long> response = ResponseDTO.ok(countResult);
+            return ResponseEntity.ok(response);
         }
         catch (Throwable t) {
             log.error("Error on counting by quantity", t);
