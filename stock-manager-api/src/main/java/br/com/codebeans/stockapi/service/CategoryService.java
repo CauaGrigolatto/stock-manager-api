@@ -45,4 +45,14 @@ public class CategoryService {
             throw t;
         }
     }
+
+    public void delete(ItemCategory category) {
+        try {
+            categoryRepository.delete(category);
+        }
+        catch(Throwable t) {
+            log.error("Error on deleting category");
+            throw t;
+        }
+    }
 }
