@@ -122,7 +122,7 @@ public class StockItemService {
         try {
             Specification<StockItem> specs = Specification.where(null);
             
-            if (filters.today()) {
+            if (Boolean.TRUE.equals(filters.today())) {
                 specs = specs.and(StockItemSpecifications.createdToday());
             }
             else {
