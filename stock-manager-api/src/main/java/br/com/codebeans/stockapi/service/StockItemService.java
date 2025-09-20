@@ -162,4 +162,14 @@ public class StockItemService {
             throw t;
         }
     }
+
+    public void delete(StockItem stockItem) throws Throwable {
+        try {
+            itemRepository.delete(stockItem);
+        }
+        catch(Throwable t) {
+            log.error("Error on deleting item");
+            throw t;
+        }
+    }
 }
