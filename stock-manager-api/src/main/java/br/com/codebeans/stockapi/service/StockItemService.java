@@ -56,36 +56,44 @@ public class StockItemService {
         }
     }
 
-    public Page<StockItem> paginate(ItemsFilterDTO fitler) throws Throwable {
+    public Page<StockItem> paginate(ItemsFilterDTO filter) throws Throwable {
         try {
-            Pageable pageable = PaginationFilterDTO.buildPageable(fitler);
+            Pageable pageable = PaginationFilterDTO.buildPageable(filter);
             Specification<StockItem> spec = Specification.where(null);
 
-            if (fitler.hasValidName()) {
-                spec = spec.and(StockItemSpecifications.nameLike(fitler.getName()));
+            if (filter.hasValidName()) {
+                spec = spec.and(StockItemSpecifications.nameLike(filter.getName()));
             }
 
-            if (fitler.isCreatedToday()) {
+            if (filter.isCreatedToday()) {
                 spec = spec.and(StockItemSpecifications.createdToday());
             }
             else {
-                if (fitler.hasValidMaxQuantity()) {
-                    spec = spec.and(StockItemSpecifications.maxQuantity(fitler.getMaxQuantity()));
+                if (filter.hasValidCreatedAfter()) {
+                    spec = spec.and(StockItemSpecifications.createdAfter(filter.getCreatedAfter()));
                 }
-    
-                if (fitler.hasValidMinQuantity()) {
-                    spec = spec.and(StockItemSpecifications.minQuantity(fitler.getMinQuantity()));
+
+                if (filter.hasValidCreatedBefore()) {
+                    spec = spec.and(StockItemSpecifications.createdBefore(filter.getCreatedBefore()));
                 }
             }
+            
+            if (filter.hasValidMaxQuantity()) {
+                spec = spec.and(StockItemSpecifications.maxQuantity(filter.getMaxQuantity()));
+            }
 
-            if (fitler.hasValidCategoryId()) {
+            if (filter.hasValidMinQuantity()) {
+                spec = spec.and(StockItemSpecifications.minQuantity(filter.getMinQuantity()));
+            }
+
+            if (filter.hasValidCategoryId()) {
                 ItemCategory category = new ItemCategory();
-                category.setId(fitler.getCategoryId());
+                category.setId(filter.getCategoryId());
                 spec = spec.and(StockItemSpecifications.categoryEquals(category));
             }
 
-            if (fitler.hasValidDescription()) {
-                spec = spec.and(StockItemSpecifications.descriptionLike(fitler.getDescription()));
+            if (filter.hasValidDescription()) {
+                spec = spec.and(StockItemSpecifications.descriptionLike(filter.getDescription()));
             }
 
             return itemRepository.findAll(spec, pageable);

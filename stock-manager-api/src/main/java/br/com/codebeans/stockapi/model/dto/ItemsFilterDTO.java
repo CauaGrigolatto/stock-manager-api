@@ -1,6 +1,6 @@
 package br.com.codebeans.stockapi.model.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.Getter;
@@ -16,8 +16,8 @@ public class ItemsFilterDTO extends PaginationFilterDTO {
     private Integer maxQuantity;
     private Integer minQuantity;
 
-    private LocalDateTime createdAfter;
-    private LocalDateTime createdBefore;
+    private LocalDate createdAfter;
+    private LocalDate createdBefore;
     private boolean createdToday;
 
     private Integer categoryId;
@@ -36,11 +36,11 @@ public class ItemsFilterDTO extends PaginationFilterDTO {
     }
 
     public boolean hasValidCreatedAfter() {
-        return createdAfter != null && createdAfter.isBefore(LocalDateTime.now());
+        return createdAfter != null;
     }
 
     public boolean hasValidCreatedBefore() {
-        return createdBefore != null && createdBefore.isBefore(LocalDateTime.now());
+        return createdBefore != null;
     }
 
     public boolean hasValidCategoryId() {
