@@ -8,10 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="item_category")
 @Data
+@NoArgsConstructor
 public class ItemCategory {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -21,4 +23,8 @@ public class ItemCategory {
     @Column(name="name", length=100)
     @Basic(optional=false)
     private String name;
+
+    public ItemCategory(Integer id) {
+        this.id = id;
+    }
 }
