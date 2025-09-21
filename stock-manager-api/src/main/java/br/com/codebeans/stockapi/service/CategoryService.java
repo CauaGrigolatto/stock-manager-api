@@ -113,7 +113,7 @@ public class CategoryService {
             throw e;
         }
         catch(Throwable t) {
-            log.error("Error on checking existence by ID", t);
+            log.error("Error on checking existence by ID");
             throw t;
         }
     }

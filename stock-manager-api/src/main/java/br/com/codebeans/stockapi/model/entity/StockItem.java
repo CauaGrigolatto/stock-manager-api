@@ -16,10 +16,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="stock_item")
 @Data
+@NoArgsConstructor
 public class StockItem {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -50,4 +52,8 @@ public class StockItem {
     @Basic(optional=false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public StockItem(Integer id) {
+        this.id = id;
+    }
 }

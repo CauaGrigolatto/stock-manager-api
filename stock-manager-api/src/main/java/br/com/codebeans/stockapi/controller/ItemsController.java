@@ -1,7 +1,6 @@
 package br.com.codebeans.stockapi.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +26,6 @@ import br.com.codebeans.stockapi.model.dto.StockItemDTO;
 import br.com.codebeans.stockapi.model.entity.StockItem;
 import br.com.codebeans.stockapi.model.mapper.StockItemMapper;
 import br.com.codebeans.stockapi.service.StockItemService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,11 +38,11 @@ public class ItemsController {
     private StockItemMapper stockItemMapper;
 
     @Autowired
-    private StockItemService stockItemService;
+    private StockItemService itemService;
 
     @GetMapping
     public ResponseEntity<?> getAll(ItemsFilterDTO filters) throws Throwable {
-        Page<StockItem> pages = stockItemService.paginate(filters);
+        Page<StockItem> pages = itemService.paginate(filters);
         Pageable pageable = pages.getPageable();
 
         List<StockItem> items = pages.getContent();
@@ -65,96 +63,62 @@ public class ItemsController {
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid SaveItemDTO saveItemRequest) throws Throwable  {
         StockItem item = stockItemMapper.toStockItem(saveItemRequest);
-        stockItemService.save(item);
+        itemService.save(item);
         StockItemDTO itemDTO = stockItemMapper.toDTO(item);
-
         ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item saved successfully.");
-
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody @Valid SaveItemDTO saveItemRequest) throws Throwable  {
-        Optional<StockItem> optItem = stockItemService.findById(id);
-
-        if (optItem.isEmpty()) {
-            throw new EntityNotFoundException("Could not find item with id " + id + ".");
-        }
-        
-        StockItem prevItem = optItem.get();
-
         StockItem item = stockItemMapper.toStockItem(saveItemRequest);
-        item.setId(prevItem.getId());
-        item.setCreatedAt(prevItem.getCreatedAt());
-        
-        stockItemService.save(item);
-
-        StockItem updatedItem = stockItemService.findById(id).get();
-        StockItemDTO itemDTO = stockItemMapper.toDTO(updatedItem);
-
+        item.setId(id);
+        itemService.update(item);
+        StockItemDTO itemDTO = stockItemMapper.toDTO(item);
         ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item updated successfully.");
-
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) throws Throwable  {
-        Optional<StockItem> optItem = stockItemService.findById(id);
-
-        if (optItem.isEmpty()) {
-            throw new EntityNotFoundException("Could not find item with id " + id + ".");
-        }
-        
-        stockItemService.delete(optItem.get());
-
-        ResponseDTO<Void> response = new ResponseDTO<>(
-            HttpStatus.OK.value(),
-            "Item deleted successfully.",
-            null
-        );
-
+        StockItem item = new StockItem(id);
+        itemService.delete(item);
+        ResponseDTO<Void> response = ResponseDTO.ok("Item deleted successfully.");
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Integer id) throws Throwable  {
-        Optional<StockItem> optItem = stockItemService.findById(id);
-
-        if (optItem.isEmpty()) {
-            throw new EntityNotFoundException("Could not find item with id " + id + ".");
-        }
-
-        StockItemDTO itemDTO = stockItemMapper.toDTO( optItem.get() );
-
+        StockItem item = itemService.validateAndGetById(id);
+        StockItemDTO itemDTO = stockItemMapper.toDTO( item );
         ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO);
-
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count")
     public ResponseEntity<?> countAll() throws Throwable  {
-        long countResult = stockItemService.countAll();
+        long countResult = itemService.countAll();
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count-by-categories")
     public ResponseEntity<?> countByCategories() throws Throwable  {
-        long countResult = stockItemService.countByCategories();
+        long countResult = itemService.countByCategories();
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count-by-creation-date")
     public ResponseEntity<?> countByCreationDate(CreationDateFiltersDTO filters) throws Throwable  {
-        long countResult = stockItemService.countByCreationDate(filters);
+        long countResult = itemService.countByCreationDate(filters);
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count-by-quantity")
     public ResponseEntity<?> countByQuantity(QuantityFiltersDTO filters) throws Throwable  {
-        long countResult = stockItemService.countByQuantity(filters);
+        long countResult = itemService.countByQuantity(filters);
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);
     }

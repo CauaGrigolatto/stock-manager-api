@@ -25,10 +25,10 @@ public class ResponseDTO<T> {
     }
 
     public static <T> ResponseDTO<T> ok(T data) {
-        return new ResponseDTO<T>(
-            HttpStatus.OK.value(),
-            null, 
-            data
-        );
+        return ResponseDTO.ok(data, null);
+    }
+
+    public static <T> ResponseDTO<T> ok(String message) {
+        return ResponseDTO.ok(null, message);
     }
 }

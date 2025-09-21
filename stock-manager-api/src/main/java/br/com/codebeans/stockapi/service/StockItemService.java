@@ -163,12 +163,62 @@ public class StockItemService {
         }
     }
 
+    public void update(StockItem item) throws Throwable {
+        try {
+            StockItem prevItem = validateAndGetById(item.getId());
+            item.setCreatedAt(prevItem.getCreatedAt());
+            save(item);
+        }
+        catch(EntityNotFoundException e) {
+            throw e;
+        }
+        catch(Throwable t) {
+            log.error("Error on finding item by id");
+            throw t;
+        }
+    }
+
+    public StockItem validateAndGetById(Integer id) throws Throwable {
+        try {
+            validateExistence(id);
+            return findById(id).get();
+        }
+        catch(EntityNotFoundException e) {
+            throw e;
+        }
+        catch(Throwable t) {
+            log.error("Error on finding item by id");
+            throw t;
+        }
+    }
+
     public void delete(StockItem stockItem) throws Throwable {
         try {
+            validateExistence(stockItem.getId());
             itemRepository.delete(stockItem);
+        }
+        catch(EntityNotFoundException e) {
+            throw e;
         }
         catch(Throwable t) {
             log.error("Error on deleting item");
+            throw t;
+        }
+    }
+
+    public void validateExistence(Integer id) throws Throwable {
+        try {
+            boolean entityExists = itemRepository.existsById(id);
+        
+            if (! entityExists) {
+                throw new EntityNotFoundException("Could not find item with id " + id + ".");
+            }
+        }
+        catch(EntityNotFoundException e) {
+            throw e;
+        }
+        catch(Throwable t) {
+            log.error("Error on checking existence by ID");
             throw t;
         }
     }
