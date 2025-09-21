@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +22,7 @@ import br.com.codebeans.stockapi.model.dto.ResponseDTO;
 import br.com.codebeans.stockapi.model.dto.SaveItemDTO;
 import br.com.codebeans.stockapi.model.dto.StockItemDTO;
 import br.com.codebeans.stockapi.model.entity.StockItem;
-import br.com.codebeans.stockapi.model.mapper.StockItemMapper;
+import br.com.codebeans.stockapi.model.mapper.ItemMapper;
 import br.com.codebeans.stockapi.service.StockItemService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -35,46 +33,33 @@ import lombok.extern.slf4j.Slf4j;
 public class ItemsController {
 
     @Autowired
-    private StockItemMapper stockItemMapper;
+    private ItemMapper itemMapper;
 
     @Autowired
     private StockItemService itemService;
 
     @GetMapping
     public ResponseEntity<?> getAll(ItemsFilterDTO filters) throws Throwable {
-        Page<StockItem> pages = itemService.paginate(filters);
-        Pageable pageable = pages.getPageable();
-
-        List<StockItem> items = pages.getContent();
-        List<StockItemDTO> itemsDTO = stockItemMapper.toListDTO(items);
-
-        PaginationResponseDTO<List<StockItemDTO>> response = new PaginationResponseDTO<List<StockItemDTO>>();
-        response.setStatus(HttpStatus.OK.value());
-        response.setData(itemsDTO);
-        response.setMessage(null);
-        response.setPage(pageable.getPageNumber());
-        response.setPageSize(pageable.getPageSize());
-        response.setTotalElements(pages.getTotalElements());
-        response.setTotalPages(pages.getTotalPages());
-
+        Page<StockItem> page = itemService.paginate(filters);
+        PaginationResponseDTO<List<StockItemDTO>> response = PaginationResponseDTO.buildResponse(page, itemMapper);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid SaveItemDTO saveItemRequest) throws Throwable  {
-        StockItem item = stockItemMapper.toStockItem(saveItemRequest);
+        StockItem item = itemMapper.toStockItem(saveItemRequest);
         itemService.save(item);
-        StockItemDTO itemDTO = stockItemMapper.toDTO(item);
+        StockItemDTO itemDTO = itemMapper.toDTO(item);
         ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item saved successfully.");
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody @Valid SaveItemDTO saveItemRequest) throws Throwable  {
-        StockItem item = stockItemMapper.toStockItem(saveItemRequest);
+        StockItem item = itemMapper.toStockItem(saveItemRequest);
         item.setId(id);
         itemService.update(item);
-        StockItemDTO itemDTO = stockItemMapper.toDTO(item);
+        StockItemDTO itemDTO = itemMapper.toDTO(item);
         ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item updated successfully.");
         return ResponseEntity.ok(response);
     }
@@ -90,7 +75,7 @@ public class ItemsController {
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Integer id) throws Throwable  {
         StockItem item = itemService.validateAndGetById(id);
-        StockItemDTO itemDTO = stockItemMapper.toDTO( item );
+        StockItemDTO itemDTO = itemMapper.toDTO( item );
         ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO);
         return ResponseEntity.ok(response);
     }

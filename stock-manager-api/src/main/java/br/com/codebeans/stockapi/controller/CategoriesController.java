@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +21,7 @@ import br.com.codebeans.stockapi.model.dto.PaginationResponseDTO;
 import br.com.codebeans.stockapi.model.dto.ResponseDTO;
 import br.com.codebeans.stockapi.model.dto.SaveCategoryDTO;
 import br.com.codebeans.stockapi.model.entity.ItemCategory;
-import br.com.codebeans.stockapi.model.mapper.ItemCategoryMapper;
+import br.com.codebeans.stockapi.model.mapper.CategoryMapper;
 import br.com.codebeans.stockapi.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -33,47 +32,34 @@ import lombok.extern.slf4j.Slf4j;
 public class CategoriesController {
 
     @Autowired
-    private ItemCategoryMapper itemCategoryMapper;
+    private CategoryMapper categoryMapper;
 
     @Autowired
     private CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<?> getAll(CategoriesFilterDTO filter) throws Throwable {
-        Page<ItemCategory> pages = categoryService.paginate(filter);
-        Pageable pageable = pages.getPageable();
-        
-        List<ItemCategory> categories = pages.getContent();
-        List<ItemCategoryDTO> categoriesDTO = itemCategoryMapper.toListDTO(categories);
-
-        PaginationResponseDTO<List<ItemCategoryDTO>> response = new PaginationResponseDTO<List<ItemCategoryDTO>>();
-        response.setStatus(HttpStatus.OK.value());
-        response.setData(categoriesDTO);
-        response.setMessage(null);
-        response.setPage(pageable.getPageNumber());
-        response.setPageSize(pageable.getPageSize());
-        response.setTotalElements(pages.getTotalElements());
-        response.setTotalPages(pages.getTotalPages());
-
+        Page<ItemCategory> page = categoryService.paginate(filter);
+        PaginationResponseDTO<List<ItemCategoryDTO>> response = PaginationResponseDTO.buildResponse(page, categoryMapper);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid SaveCategoryDTO saveCategoryRequest) throws Throwable {
-        ItemCategory category = itemCategoryMapper.toItemCategory(saveCategoryRequest);
+        ItemCategory category = categoryMapper.toItemCategory(saveCategoryRequest);
         categoryService.save(category);
-        ItemCategoryDTO categoryDTO = itemCategoryMapper.toDTO(category);
+        ItemCategoryDTO categoryDTO = categoryMapper.toDTO(category);
         ResponseDTO<ItemCategoryDTO> response = ResponseDTO.ok(categoryDTO, "Category saved successfully.");
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody @Valid SaveCategoryDTO saveCategoryRequest) throws Throwable {
-        ItemCategory category = itemCategoryMapper.toItemCategory(saveCategoryRequest);
+        ItemCategory category = categoryMapper.toItemCategory(saveCategoryRequest);
         category.setId(id);
         categoryService.update(category);
         
-        ItemCategoryDTO categoryDTO = itemCategoryMapper.toDTO(category);
+        ItemCategoryDTO categoryDTO = categoryMapper.toDTO(category);
         ResponseDTO<ItemCategoryDTO> response = ResponseDTO.ok(categoryDTO, "Category updated successfully.");
         
         return ResponseEntity.ok(response);
@@ -82,7 +68,7 @@ public class CategoriesController {
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Integer id) throws Throwable {
         ItemCategory category = categoryService.validateAndGetById(id);
-        ItemCategoryDTO categoryDTO = itemCategoryMapper.toDTO( category );
+        ItemCategoryDTO categoryDTO = categoryMapper.toDTO( category );
         ResponseDTO<ItemCategoryDTO> response = ResponseDTO.ok(categoryDTO);
         return ResponseEntity.ok( response );
     }

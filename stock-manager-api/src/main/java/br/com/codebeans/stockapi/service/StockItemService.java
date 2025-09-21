@@ -32,12 +32,12 @@ public class StockItemService {
     public void save(StockItem item) throws Throwable {
         try {
             Integer categoryId = item.getCategory().getId();
-            Optional<ItemCategory> optCategory = categoryService.findById(categoryId);
+            ItemCategory category = 
+                    categoryService
+                        .findById(categoryId)
+                        .orElseThrow(() -> new EntityNotFoundException("Could not find category with id " + categoryId + "."));
 
-            if (optCategory.isEmpty()) {
-                throw new EntityNotFoundException("Could not find category with id " + categoryId + ".");
-            }
-
+            item.setCategory(category);
             itemRepository.save(item);
         }
         catch(Throwable t) {
