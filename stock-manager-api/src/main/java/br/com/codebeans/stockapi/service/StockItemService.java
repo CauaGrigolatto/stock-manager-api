@@ -56,36 +56,36 @@ public class StockItemService {
         }
     }
 
-    public Page<StockItem> paginate(ItemsFilterDTO filters) throws Throwable {
+    public Page<StockItem> paginate(ItemsFilterDTO fitler) throws Throwable {
         try {
-            Pageable pageable = PaginationFilterDTO.buildPageable(filters);
+            Pageable pageable = PaginationFilterDTO.buildPageable(fitler);
             Specification<StockItem> spec = Specification.where(null);
 
-            if (filters.hasValidName()) {
-                spec = spec.and(StockItemSpecifications.nameLike(filters.getName()));
+            if (fitler.hasValidName()) {
+                spec = spec.and(StockItemSpecifications.nameLike(fitler.getName()));
             }
 
-            if (filters.isCreatedToday()) {
+            if (fitler.isCreatedToday()) {
                 spec = spec.and(StockItemSpecifications.createdToday());
             }
             else {
-                if (filters.hasValidMaxQuantity()) {
-                    spec = spec.and(StockItemSpecifications.maxQuantity(filters.getMaxQuantity()));
+                if (fitler.hasValidMaxQuantity()) {
+                    spec = spec.and(StockItemSpecifications.maxQuantity(fitler.getMaxQuantity()));
                 }
     
-                if (filters.hasValidMinQuantity()) {
-                    spec = spec.and(StockItemSpecifications.minQuantity(filters.getMinQuantity()));
+                if (fitler.hasValidMinQuantity()) {
+                    spec = spec.and(StockItemSpecifications.minQuantity(fitler.getMinQuantity()));
                 }
             }
 
-            if (filters.hasValidCategoryId()) {
+            if (fitler.hasValidCategoryId()) {
                 ItemCategory category = new ItemCategory();
-                category.setId(filters.getCategoryId());
+                category.setId(fitler.getCategoryId());
                 spec = spec.and(StockItemSpecifications.categoryEquals(category));
             }
 
-            if (filters.hasValidDescription()) {
-                spec = spec.and(StockItemSpecifications.descriptionLike(filters.getDescription()));
+            if (fitler.hasValidDescription()) {
+                spec = spec.and(StockItemSpecifications.descriptionLike(fitler.getDescription()));
             }
 
             return itemRepository.findAll(spec, pageable);

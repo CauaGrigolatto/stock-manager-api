@@ -1,12 +1,17 @@
 package br.com.codebeans.stockapi.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import br.com.codebeans.stockapi.model.dto.CategoriesFilterDTO;
+import br.com.codebeans.stockapi.model.dto.PaginationFilterDTO;
 import br.com.codebeans.stockapi.model.entity.ItemCategory;
+import br.com.codebeans.stockapi.model.specifications.ItemCategorySpecifications;
 import br.com.codebeans.stockapi.repository.CategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,9 +41,16 @@ public class CategoryService {
         }
     }
 
-    public List<ItemCategory> findAll() throws Throwable {
+    public Page<ItemCategory> paginate(CategoriesFilterDTO filter) throws Throwable {
         try {
-            return categoryRepository.findAll();
+            Pageable pageable = PaginationFilterDTO.buildPageable(filter);
+            Specification<ItemCategory> spec = Specification.where(null);
+
+            if (filter.hasValidName()) {
+                spec = spec.and(ItemCategorySpecifications.nameLike(filter.getName()));
+            }
+
+            return categoryRepository.findAll(spec, pageable);
         }
         catch(Throwable t) {
             log.error("Error on finding all categories");
