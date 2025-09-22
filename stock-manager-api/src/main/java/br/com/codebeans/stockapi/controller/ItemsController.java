@@ -39,14 +39,14 @@ public class ItemsController {
     private StockItemService itemService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(ItemsFilterDTO filters) throws Throwable {
+    public ResponseEntity<?> getAll(ItemsFilterDTO filters) {
         Page<StockItem> page = itemService.paginate(filters);
         PaginationResponseDTO<List<StockItemDTO>> response = PaginationResponseDTO.buildResponse(page, itemMapper);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody @Valid SaveItemDTO saveItemRequest) throws Throwable  {
+    public ResponseEntity<?> save(@RequestBody @Valid SaveItemDTO saveItemRequest) {
         StockItem item = itemMapper.toStockItem(saveItemRequest);
         itemService.save(item);
         StockItemDTO itemDTO = itemMapper.toDTO(item);
@@ -55,7 +55,7 @@ public class ItemsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody @Valid SaveItemDTO saveItemRequest) throws Throwable  {
+    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody @Valid SaveItemDTO saveItemRequest) {
         StockItem item = itemMapper.toStockItem(saveItemRequest);
         item.setId(id);
         itemService.update(item);
@@ -65,7 +65,7 @@ public class ItemsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) throws Throwable  {
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
         StockItem item = new StockItem(id);
         itemService.delete(item);
         ResponseDTO<Void> response = ResponseDTO.ok("Item deleted successfully.");
@@ -73,7 +73,7 @@ public class ItemsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable Integer id) throws Throwable  {
+    public ResponseEntity<?> get(@PathVariable Integer id) {
         StockItem item = itemService.validateAndGetById(id);
         StockItemDTO itemDTO = itemMapper.toDTO( item );
         ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO);
@@ -81,28 +81,28 @@ public class ItemsController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<?> countAll() throws Throwable  {
+    public ResponseEntity<?> countAll() {
         long countResult = itemService.countAll();
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count-by-categories")
-    public ResponseEntity<?> countByCategories() throws Throwable  {
+    public ResponseEntity<?> countByCategories() {
         long countResult = itemService.countByCategories();
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count-by-creation-date")
-    public ResponseEntity<?> countByCreationDate(CreationDateFiltersDTO filters) throws Throwable  {
+    public ResponseEntity<?> countByCreationDate(CreationDateFiltersDTO filters) {
         long countResult = itemService.countByCreationDate(filters);
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count-by-quantity")
-    public ResponseEntity<?> countByQuantity(QuantityFiltersDTO filters) throws Throwable  {
+    public ResponseEntity<?> countByQuantity(QuantityFiltersDTO filters) {
         long countResult = itemService.countByQuantity(filters);
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);

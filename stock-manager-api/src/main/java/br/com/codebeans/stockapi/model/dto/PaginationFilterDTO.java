@@ -23,16 +23,9 @@ public class PaginationFilterDTO {
     private Integer pageSize;
     private String sortBy;
     private String direction;
+    private boolean unpaged;
 
     public static Pageable buildPageable(PaginationFilterDTO filter) {
-        if (! filter.hasValidPageSize()) {
-            filter.setPageSize(10);
-        }
-        
-        if (! filter.hasValidPage()) {
-            filter.setPage(0);
-        }
-
         Sort sort = Sort.unsorted();
         
         if (filter.hasValidSortBy()) {
@@ -43,7 +36,19 @@ public class PaginationFilterDTO {
             Sort.Direction direction = Sort.Direction.fromString(filter.direction);
             sort = Sort.by(direction, filter.getSortBy());
         }
+
+        if (filter.unpaged) {
+            return Pageable.unpaged(sort);
+        }
+
+        if (! filter.hasValidPageSize()) {
+            filter.setPageSize(10);
+        }
         
+        if (! filter.hasValidPage()) {
+            filter.setPage(0);
+        }
+
         return PageRequest.of(filter.getPage(), filter.getPageSize(), sort);
     }
 

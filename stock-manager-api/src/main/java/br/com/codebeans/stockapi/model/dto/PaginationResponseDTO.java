@@ -31,8 +31,8 @@ public class PaginationResponseDTO<T> extends ResponseDTO<T> {
         response.setStatus(HttpStatus.OK.value());
         response.setData(itemsDTO);
         response.setMessage(null);
-        response.setPage(pageable.getPageNumber());
-        response.setPageSize(pageable.getPageSize());
+        response.setPage(pageable.isUnpaged() ? 0 : pageable.getPageNumber());
+        response.setPageSize(pageable.isUnpaged() ? items.size() :pageable.getPageSize());
         response.setTotalElements(page.getTotalElements());
         response.setTotalPages(page.getTotalPages());
         
