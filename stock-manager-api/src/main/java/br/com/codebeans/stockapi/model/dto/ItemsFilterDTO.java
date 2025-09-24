@@ -2,7 +2,8 @@ package br.com.codebeans.stockapi.model.dto;
 
 import java.time.LocalDate;
 
-import io.micrometer.common.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

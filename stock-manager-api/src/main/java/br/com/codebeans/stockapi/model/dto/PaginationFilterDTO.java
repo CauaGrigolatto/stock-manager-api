@@ -57,7 +57,7 @@ public class PaginationFilterDTO {
     }
 
     public boolean hasValidPage() {
-        return page != null && page > 0;
+        return page != null && page >= 0;
     }
 
     public boolean hasValidDirection() {

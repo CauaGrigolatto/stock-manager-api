@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.codebeans.stockapi.model.dto.CreationDateFiltersDTO;
 import br.com.codebeans.stockapi.model.dto.ItemsFilterDTO;
@@ -29,6 +30,7 @@ public class StockItemService {
     @Autowired
     private CategoryService categoryService;
 
+    @Transactional
     public void save(StockItem item) {
         Integer categoryId = item.getCategory().getId();
         ItemCategory category = categoryService.validateAndGetById(categoryId);
@@ -36,10 +38,12 @@ public class StockItemService {
         itemRepository.save(item);
     }
 
+    @Transactional(readOnly = true)
     public Optional<StockItem> findById(Integer id) {
         return itemRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public Page<StockItem> paginate(ItemsFilterDTO filter) {
         Pageable pageable = PaginationFilterDTO.buildPageable(filter);
         Specification<StockItem> spec = Specification.where(null);
@@ -82,14 +86,17 @@ public class StockItemService {
         return itemRepository.findAll(spec, pageable);
     }
 
+    @Transactional(readOnly = true)
     public long countAll() {
         return itemRepository.count();
     }
 
+    @Transactional(readOnly = true)
     public long countByCategories() {
         return itemRepository.countByCategories();
     }
 
+    @Transactional(readOnly = true)
     public long countByCreationDate(CreationDateFiltersDTO filters) {
         Specification<StockItem> specs = Specification.where(null);
         
@@ -109,6 +116,7 @@ public class StockItemService {
         return itemRepository.count(specs);
     }
 
+    @Transactional(readOnly = true)
     public long countByQuantity(QuantityFiltersDTO filters) {
         Specification<StockItem> specs = Specification.where(null);
 
@@ -123,22 +131,26 @@ public class StockItemService {
         return itemRepository.count(specs);
     }
 
+    @Transactional
     public void update(StockItem item) {
         StockItem prevItem = validateAndGetById(item.getId());
         item.setCreatedAt(prevItem.getCreatedAt());
-        save(item);
+        itemRepository.save(item);
     }
 
+    @Transactional(readOnly = true)
     public StockItem validateAndGetById(Integer id) {
         validateExistence(id);
         return findById(id).get();
     }
 
+    @Transactional
     public void delete(StockItem stockItem) {
         validateExistence(stockItem.getId());
         itemRepository.delete(stockItem);
     }
 
+    @Transactional(readOnly = true)
     public void validateExistence(Integer id) {
         boolean entityExists = itemRepository.existsById(id);
     

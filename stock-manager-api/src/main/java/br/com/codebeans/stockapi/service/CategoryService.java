@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.codebeans.stockapi.model.dto.CategoriesFilterDTO;
 import br.com.codebeans.stockapi.model.dto.PaginationFilterDTO;
@@ -22,14 +23,17 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Transactional
     public void save(ItemCategory category) {
         categoryRepository.save(category);
     }
 
+    @Transactional(readOnly = true)
     public Optional<ItemCategory> findById(Integer id) {
         return categoryRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public Page<ItemCategory> paginate(CategoriesFilterDTO filter) {
         Pageable pageable = PaginationFilterDTO.buildPageable(filter);
         Specification<ItemCategory> spec = Specification.where(null);
@@ -41,21 +45,25 @@ public class CategoryService {
         return categoryRepository.findAll(spec, pageable);
     }
 
+    @Transactional
     public void delete(ItemCategory category) {
         validateExistence(category.getId());
         categoryRepository.delete(category);
     }
 
+    @Transactional(readOnly = true)
     public ItemCategory validateAndGetById(Integer id) {
         validateExistence(id);
         return findById(id).get();
     }
 
+    @Transactional
     public void update(ItemCategory category) {
         validateExistence(category.getId());
         save(category);
     }
 
+    @Transactional(readOnly = true)
     public void validateExistence(Integer id) {
         boolean entityExists = categoryRepository.existsById(id);
 
