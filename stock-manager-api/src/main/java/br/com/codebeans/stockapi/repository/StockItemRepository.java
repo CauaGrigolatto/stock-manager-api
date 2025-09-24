@@ -10,5 +10,8 @@ public interface StockItemRepository extends JpaRepository<StockItem, Integer>, 
 
     @Query("SELECT COUNT(DISTINCT i.category) FROM StockItem i")
     long countByCategories();
+
+    @Query("SELECT SUM(i.quantity) FROM StockItem i")
+    long countTotal();
     
 }

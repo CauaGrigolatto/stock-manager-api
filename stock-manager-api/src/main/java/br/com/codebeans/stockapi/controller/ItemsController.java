@@ -80,9 +80,9 @@ public class ItemsController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/count")
-    public ResponseEntity<?> countAll() {
-        long countResult = itemService.countAll();
+    @GetMapping("/count-total")
+    public ResponseEntity<?> countTotal() {
+        long countResult = itemService.countTotal();
         ResponseDTO<Long> response = ResponseDTO.ok(countResult);
         return ResponseEntity.ok(response);
     }

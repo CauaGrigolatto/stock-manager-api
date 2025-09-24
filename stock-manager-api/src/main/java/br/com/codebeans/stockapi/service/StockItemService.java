@@ -57,11 +57,11 @@ public class StockItemService {
         }
         else {
             if (filter.hasValidCreatedAfter()) {
-                spec = spec.and(StockItemSpecifications.createdAfter(filter.getCreatedAfter()));
+                spec = spec.and(StockItemSpecifications.asFromAfter(filter.getCreatedAfter()));
             }
 
             if (filter.hasValidCreatedBefore()) {
-                spec = spec.and(StockItemSpecifications.createdBefore(filter.getCreatedBefore()));
+                spec = spec.and(StockItemSpecifications.asFromBefore(filter.getCreatedBefore()));
             }
         }
         
@@ -87,8 +87,8 @@ public class StockItemService {
     }
 
     @Transactional(readOnly = true)
-    public long countAll() {
-        return itemRepository.count();
+    public long countTotal() {
+        return itemRepository.countTotal();
     }
 
     @Transactional(readOnly = true)
@@ -105,11 +105,11 @@ public class StockItemService {
         }
         else {
             if (filters.after() != null) {
-                specs = specs.and(StockItemSpecifications.createdAfter(filters.after()));
+                specs = specs.and(StockItemSpecifications.asFromAfter(filters.after()));
             }
     
             if (filters.before() != null) {
-                specs = specs.and(StockItemSpecifications.createdBefore(filters.before()));
+                specs = specs.and(StockItemSpecifications.asFromBefore(filters.before()));
             }
         }
         

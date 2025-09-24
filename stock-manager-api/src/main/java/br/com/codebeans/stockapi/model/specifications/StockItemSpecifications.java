@@ -34,15 +34,15 @@ public class StockItemSpecifications {
         };
     }
 
-    public static Specification<StockItem> createdBefore(LocalDate date) {
+    public static Specification<StockItem> asFromBefore(LocalDate date) {
         return (root, query, cb) -> {
             return cb.lessThan(root.get("createdAt"), date.atStartOfDay());
         };
     }
 
-    public static Specification<StockItem> createdAfter(LocalDate date) {
+    public static Specification<StockItem> asFromAfter(LocalDate date) {
         return (root, query, cb) -> {
-            return cb.greaterThan(root.get("createdAt"), date.atStartOfDay());
+            return cb.greaterThanOrEqualTo(root.get("createdAt"), date.atStartOfDay());
         };
     }
 
