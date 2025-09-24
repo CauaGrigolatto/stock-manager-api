@@ -11,6 +11,7 @@ import br.com.codebeans.stockapi.model.entity.StockItem;
 public interface ItemMapper extends BasicMapper<StockItemDTO, StockItem> {
     @Mapping(target="id", ignore=true)
     @Mapping(target="createdAt", ignore=true)
+    @Mapping(target="updatedAt", ignore=true)
     @Mapping(source="categoryId", target="category.id")
     StockItem toStockItem(SaveItemDTO SaveItemRequest);
 }

@@ -14,7 +14,9 @@ public record StockItemDTO(
     ItemCategoryDTO category,
     String description,
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", shape=Shape.STRING)
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", shape=Shape.STRING)
+    LocalDateTime updatedAt
 ) {
 
 }

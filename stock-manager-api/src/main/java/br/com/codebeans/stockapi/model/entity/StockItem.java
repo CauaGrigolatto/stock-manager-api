@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -52,6 +53,11 @@ public class StockItem {
     @Basic(optional=false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @Column(name="updated_at")
+    @Basic(optional=false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public StockItem(Integer id) {
         this.id = id;
