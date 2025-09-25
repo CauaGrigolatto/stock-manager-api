@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 
 import br.com.codebeans.stockapi.model.dto.SaveItemDTO;
 import br.com.codebeans.stockapi.model.dto.StockItemDTO;
+import br.com.codebeans.stockapi.model.entity.ItemCategory;
 import br.com.codebeans.stockapi.model.entity.StockItem;
 
 @Mapper(componentModel="spring")
@@ -14,4 +15,12 @@ public interface ItemMapper extends BasicMapper<StockItemDTO, StockItem> {
     @Mapping(target="updatedAt", ignore=true)
     @Mapping(source="categoryId", target="category.id")
     StockItem toStockItem(SaveItemDTO SaveItemRequest);
+
+    default ItemCategory mapCategoryIdToItemCategory(Integer categoryId) {
+        if (categoryId == null) {
+            return null;
+        }
+
+        return new ItemCategory(categoryId);
+    }
 }

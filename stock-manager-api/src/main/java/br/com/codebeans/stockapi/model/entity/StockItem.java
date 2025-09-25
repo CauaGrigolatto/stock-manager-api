@@ -41,7 +41,7 @@ public class StockItem {
     @Basic(optional=false)
     private BigDecimal price;
 
-    @ManyToOne(fetch=FetchType.EAGER, optional=false)
+    @ManyToOne(fetch=FetchType.EAGER, optional=true)
     @JoinColumn(name="category_id")
     private ItemCategory category;
 

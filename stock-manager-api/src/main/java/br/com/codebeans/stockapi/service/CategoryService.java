@@ -34,6 +34,7 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
+    @SuppressWarnings({"removal"})
     public Page<ItemCategory> paginate(CategoriesFilterDTO filter) {
         Pageable pageable = PaginationFilterDTO.buildPageable(filter);
         Specification<ItemCategory> spec = Specification.where(null);

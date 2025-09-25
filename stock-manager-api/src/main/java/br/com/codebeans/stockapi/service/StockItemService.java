@@ -33,8 +33,15 @@ public class StockItemService {
     @Transactional
     public void save(StockItem item) {
         Integer categoryId = item.getCategory().getId();
-        ItemCategory category = categoryService.validateAndGetById(categoryId);
-        item.setCategory(category);
+
+        if (categoryId != null) {
+            ItemCategory category = categoryService.validateAndGetById(categoryId);
+            item.setCategory(category);
+        }
+        else {
+            item.setCategory(null);
+        }
+
         itemRepository.save(item);
     }
 
@@ -135,7 +142,7 @@ public class StockItemService {
     public void update(StockItem item) {
         StockItem prevItem = validateAndGetById(item.getId());
         item.setCreatedAt(prevItem.getCreatedAt());
-        itemRepository.save(item);
+        save(item);
     }
 
     @Transactional(readOnly = true)
