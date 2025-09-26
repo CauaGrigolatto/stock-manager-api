@@ -51,12 +51,6 @@ spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
 ```
 
-### 🧪 Rodar os testes
-
-```bash
-mvn test
-```
-
 ---
 
 ## 🌐 ENDPOINTS (visão geral)
@@ -98,6 +92,5 @@ mvn test
 
 ## 📜 LICENÇA
 
-Adicione um arquivo `LICENSE` (MIT ou Apache-2.0 são recomendadas) antes de publicar.
-
+MIT
 
