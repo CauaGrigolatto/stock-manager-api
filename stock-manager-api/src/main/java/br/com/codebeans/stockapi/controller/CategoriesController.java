@@ -49,7 +49,7 @@ public class CategoriesController {
         ItemCategory category = categoryMapper.toItemCategory(saveCategoryRequest);
         categoryService.save(category);
         ItemCategoryDTO categoryDTO = categoryMapper.toDTO(category);
-        ResponseDTO<ItemCategoryDTO> response = ResponseDTO.ok(categoryDTO, "Category saved successfully.");
+        ResponseDTO<ItemCategoryDTO> response = ResponseDTO.ok(categoryDTO, "Categoria salva com sucesso.");
         return ResponseEntity.ok(response);
     }
 
@@ -60,7 +60,7 @@ public class CategoriesController {
         categoryService.update(category);
         
         ItemCategoryDTO categoryDTO = categoryMapper.toDTO(category);
-        ResponseDTO<ItemCategoryDTO> response = ResponseDTO.ok(categoryDTO, "Category updated successfully.");
+        ResponseDTO<ItemCategoryDTO> response = ResponseDTO.ok(categoryDTO, "Categoria atualizada com sucesso.");
         
         return ResponseEntity.ok(response);
     }
@@ -80,7 +80,7 @@ public class CategoriesController {
         
         ResponseDTO<Void> response = new ResponseDTO<>(
             HttpStatus.OK.value(),
-            "Category deleted successfully.",
+            "Categoria deletada com sucesso.",
             null
         );
 

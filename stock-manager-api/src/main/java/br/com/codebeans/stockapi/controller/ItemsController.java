@@ -50,7 +50,7 @@ public class ItemsController {
         StockItem item = itemMapper.toStockItem(saveItemRequest);
         itemService.save(item);
         StockItemDTO itemDTO = itemMapper.toDTO(item);
-        ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item saved successfully.");
+        ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item salvo com sucesso.");
         return ResponseEntity.ok(response);
     }
 
@@ -60,7 +60,7 @@ public class ItemsController {
         item.setId(id);
         itemService.update(item);
         StockItemDTO itemDTO = itemMapper.toDTO(item);
-        ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item updated successfully.");
+        ResponseDTO<StockItemDTO> response = ResponseDTO.ok(itemDTO, "Item atualizado com sucesso.");
         return ResponseEntity.ok(response);
     }
 
@@ -68,7 +68,7 @@ public class ItemsController {
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         StockItem item = new StockItem(id);
         itemService.delete(item);
-        ResponseDTO<Void> response = ResponseDTO.ok("Item deleted successfully.");
+        ResponseDTO<Void> response = ResponseDTO.ok("Item deletado com sucesso.");
         return ResponseEntity.ok(response);
     }
 
